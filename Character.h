@@ -5,6 +5,7 @@
 #ifndef DIGDUGSFML_CHARACTER_H
 #define DIGDUGSFML_CHARACTER_H
 #include <SFML/Graphics.hpp>
+#include "TileMap.h"
 #include <string>
 
 class Character {
@@ -16,7 +17,8 @@ public:
     void setPosition(sf::Vector2f& pos);
     sf::Vector2f getPosition() { return _sprite.getPosition(); }
     sf::Rect<float> getGlobalBoundingBox() { return _sprite.getGlobalBounds(); }
-    virtual void update(sf::Event&) = 0;
+    virtual void update(sf::Event&, TileMap&) = 0;
+    Tile* checkForTileCollision(TileMap& map);
     virtual ~Character() = default;
 protected:
     sf::Sprite _sprite;

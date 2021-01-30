@@ -10,10 +10,9 @@ class Player : public Character {
 public:
     Player(sf::RenderWindow* window, std::string texturePath) : Character(window, texturePath) {};
 
-    void update(sf::Event&);
-
+    void update(sf::Event&, TileMap&);
 private:
-    void move();
+    void move(TileMap &map);
 };
 
 

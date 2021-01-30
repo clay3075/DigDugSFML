@@ -20,6 +20,13 @@ bool Character::checkForCollision(sf::Rect<float> &position) {
     return spriteBounds.intersects(position);
 }
 
+Tile* Character::checkForTileCollision(TileMap &map) {
+    auto playerBoundingBox = this->getGlobalBoundingBox();
+    return map.checkForCollision(playerBoundingBox.left, playerBoundingBox.top, playerBoundingBox.width,
+                                       playerBoundingBox.height, 8);
+
+}
+
 void Character::draw() {
     _window->draw(_sprite);
 }

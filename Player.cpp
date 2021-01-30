@@ -3,15 +3,14 @@
 //
 
 #include "Player.h"
-#include <iostream>
 
 const int MOVE_SPEED = 4;
 
-void Player::update(sf::Event &event) {
-    move();
+void Player::update(sf::Event &event, TileMap &map) {
+    move(map);
 }
 
-void Player::move() {
+void Player::move(TileMap &map) {
     auto pos = _sprite.getPosition();
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)) {
@@ -31,4 +30,11 @@ void Player::move() {
 
     if (pos.x >= 0 && spriteRight <= windowX && pos.y >= 0 && spriteBottom <= windowY)
         _sprite.setPosition(pos);
+
+    Tile* tile = checkForTileCollision(map);
+    if (tile) {
+        tile->setCollision(false);
+        tile->setTexturePath("");
+    }
 }
+
