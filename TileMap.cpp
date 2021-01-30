@@ -73,12 +73,29 @@ void TileMap::initGrid(std::string path) {
     }
 }
 
-bool TileMap::checkForCollision(int x, int y) {
-    x = round(x/this->tileDimensions.width);
-    y = round(y/this->tileDimensions.height);
+Tile* TileMap::checkForCollision(float x, float y) {
+    x = ceil(x/this->tileDimensions.width) - 1;
+    y = ceil(y/this->tileDimensions.height) - 1;
 
-    if (x >= this->grid.size() || y >= this->grid[x].size())
-        return true;
+    if (y >= this->grid.size() || x >= this->grid[y].size())
+        return NULL;
 
-    return this->grid[x][y].getCollision();
+    Tile* tile = &this->grid[y][x];
+
+    return tile->getCollision() ? tile : NULL;
+}
+
+Tile* TileMap::checkForCollision(float left, float top, float width, float height, float boxBuffer) {
+    float xCenter = left + width/2;
+    float yCenter = top + height/2;
+
+    Tile* collisions [4] = {checkForCollision(xCenter, top+boxBuffer), checkForCollision(xCenter, top + height - boxBuffer),
+                            checkForCollision(left + boxBuffer, yCenter), checkForCollision(left + width - boxBuffer, yCenter)};
+
+    for (auto tile : collisions) {
+        if (tile)
+            return tile;
+    }
+
+    return NULL;
 }

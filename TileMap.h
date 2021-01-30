@@ -19,7 +19,8 @@ public:
     Dimensions getTileDimension() { return this->tileDimensions; };
     std::vector<std::vector<Tile>> gridData() {return grid; }
     std::string getTexturePath(int type) { return texturePaths.at(type); }
-    bool checkForCollision(int x, int y);
+    Tile* checkForCollision(float x, float y);
+    Tile* checkForCollision(float left, float top, float width, float height, float boxBuffer);
 private:
     //properties
     std::vector<std::vector<Tile>> grid;

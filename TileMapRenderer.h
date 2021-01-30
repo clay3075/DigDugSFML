@@ -10,11 +10,11 @@
 
 class TileMapRenderer {
 public:
-    TileMapRenderer(sf::RenderWindow* window, TileMap map) { _window = window; _tileMap = map; }
+    TileMapRenderer(sf::RenderWindow* window, TileMap* map) { _window = window; _tileMap = map; }
     void draw();
 private:
     sf::RenderWindow* _window;
-    TileMap _tileMap;
+    TileMap* _tileMap;
 };
 
 #endif //SFMLTILEMAP_TILEMAPRENDERER_H

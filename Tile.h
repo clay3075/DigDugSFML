@@ -21,11 +21,11 @@ public:
     bool getCollision() { return collision; }
     void setCollision(bool collision) { this->collision = collision; }
 private:
-    Point position;
+    Point position = Point(0, 0);
     Dimensions dimensions;
-    int type;
-    std::string texturePath;
-    bool collision;
+    int type = 0;
+    std::string texturePath = "";
+    bool collision = false;
 };
 
 
