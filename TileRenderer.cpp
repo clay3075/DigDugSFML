@@ -7,12 +7,12 @@
 
 void TileRenderer::draw() {
     sf::Sprite sprite;
-    Dimensions tileDim = _tile.getDimensions();
-    Point tilePos = _tile.getPosition();
+    Dimensions tileDim = _tile->getDimensions();
+    Point tilePos = _tile->getPosition();
     float spriteX = tilePos.x * tileDim.width;
     float spriteY = tilePos.y * tileDim.height;
 
-    auto texture = getTexture(_tile.getTexturePath());
+    auto texture = getTexture(_tile->getTexturePath());
 
     sprite.setTexture(texture);
     sprite.setPosition(spriteX, spriteY);

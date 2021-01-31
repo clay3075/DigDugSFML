@@ -20,10 +20,10 @@ bool Character::checkForCollision(sf::Rect<float> &position) {
     return spriteBounds.intersects(position);
 }
 
-Tile* Character::checkForTileCollision(TileMap &map) {
+Tile* Character::checkForTileCollision(TileMap &map, float collisionBoxBufferInPixels) {
     auto playerBoundingBox = this->getGlobalBoundingBox();
     return map.checkForCollision(playerBoundingBox.left, playerBoundingBox.top, playerBoundingBox.width,
-                                       playerBoundingBox.height, 8);
+                                       playerBoundingBox.height, collisionBoxBufferInPixels);
 
 }
 
@@ -39,6 +39,11 @@ void Character::setScale(float pixelWidth, float pixelHeight) {
 
 void Character::setPosition(sf::Vector2f &pos) {
     _sprite.setPosition(pos);
+}
+
+void Character::die() {
+    if (_onDie)
+        _onDie(this);
 }
 
 

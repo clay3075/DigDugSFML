@@ -8,6 +8,7 @@ const int MOVE_SPEED = 4;
 
 void Enemy::update(sf::Event &event, TileMap &map) {
     move(map);
+    tryToKillTarget();
 }
 
 void Enemy::move(TileMap &map) {
@@ -39,7 +40,7 @@ void Enemy::move(TileMap &map) {
 
     if (pos.x >= 0 && spriteRight <= windowX && pos.y >= 0 && spriteBottom <= windowY) {
         setPosition(pos);
-        if (checkForTileCollision(map)) {
+        if (checkForTileCollision(map, 1)) {
             direction++;
             pos = resetPos;
             setPosition(pos);
@@ -51,5 +52,13 @@ void Enemy::move(TileMap &map) {
         direction++;
         moved = false;
     }
+}
 
+void Enemy::tryToKillTarget() {
+    if (!_target) return;
+
+    auto targetRect = _target->getGlobalBoundingBox();
+    if (checkForCollision(targetRect)) {
+        _target->die();
+    }
 }

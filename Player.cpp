@@ -31,7 +31,7 @@ void Player::move(TileMap &map) {
     if (pos.x >= 0 && spriteRight <= windowX && pos.y >= 0 && spriteBottom <= windowY)
         _sprite.setPosition(pos);
 
-    Tile* tile = checkForTileCollision(map);
+    Tile* tile = checkForTileCollision(map, 8);
     if (tile) {
         tile->setCollision(false);
         tile->setTexturePath("");

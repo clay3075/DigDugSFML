@@ -18,13 +18,18 @@ public:
     sf::Vector2f getPosition() { return _sprite.getPosition(); }
     sf::Rect<float> getGlobalBoundingBox() { return _sprite.getGlobalBounds(); }
     virtual void update(sf::Event&, TileMap&) = 0;
-    Tile* checkForTileCollision(TileMap& map);
+    Tile* checkForTileCollision(TileMap& map, float collisionBoxBufferInPixels);
     virtual ~Character() = default;
+    void die();
+    void setOnDie(void (*onDie)(Character*)) { _onDie = onDie; }
+    void markForDestruction() { _readyToDestroy = true; }
+    bool isMarkedForDestruction() { return _readyToDestroy; }
 protected:
     sf::Sprite _sprite;
     sf::Texture _texture;
     sf::RenderWindow* _window;
-
+    void (*_onDie)(Character*) = nullptr;
+    bool _readyToDestroy;
 };
 
 

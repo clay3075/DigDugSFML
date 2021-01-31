@@ -17,16 +17,18 @@ public:
     ~TileMap() = default;
     void printGrid();
     Dimensions getTileDimension() { return this->tileDimensions; };
-    std::vector<std::vector<Tile>> gridData() {return grid; }
+    std::vector<std::vector<Tile*>> gridData() {return grid; }
     std::string getTexturePath(int type) { return texturePaths.at(type); }
     Tile* checkForCollision(float x, float y);
     Tile* checkForCollision(float left, float top, float width, float height, float boxBuffer);
+    void reset();
 private:
     //properties
-    std::vector<std::vector<Tile>> grid;
+    std::vector<std::vector<Tile*>> grid;
     Dimensions tileDimensions{};
     std::map<int, std::string> texturePaths;
     std::map<int, bool> textureCollisions;
+    std::string _tileMapFilePath;
     //methods
     void initGrid(std::string path);
 };
