@@ -19,6 +19,8 @@ void initCharacterGraphics(Character*, sf::Vector2f);
 void onPlayerDied(Character*);
 void onEnemyDied(Character*);
 void cleanUpCharacters(std::vector<Character*> &characters);
+void updateCharacters(std::vector<Character*> &characters, sf::Event &event, TileMap &map);
+void drawCharacters(std::vector<Character*> &characters);
 void reset(sf::RenderWindow*, std::vector<Character*>&, TileMap* map = nullptr);
 
 bool GAME_OVER;
@@ -46,11 +48,7 @@ int main()
         }
 
         if (!GAME_OVER) {
-            for (auto character : characters) {
-                if (character) {
-                    character->update(event, map);
-                }
-            }
+            updateCharacters(characters, event, map);
         } else {
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) {
                 reset(&window, characters, &map);
@@ -62,11 +60,7 @@ int main()
 
         window.clear();
         mapRenderer.draw();
-        for (auto character : characters) {
-            if (character) {
-                character->draw();
-            }
-        }
+        drawCharacters(characters);
         window.display();
     }
 
@@ -121,4 +115,20 @@ void reset(sf::RenderWindow* window, std::vector<Character*>& characters, TileMa
     characters.clear();
     characters.assign(tmpCharacters.begin(), tmpCharacters.end());
     if (map) map->reset();
+}
+
+void updateCharacters(std::vector<Character*> &characters, sf::Event &event, TileMap &map) {
+    for (auto character : characters) {
+        if (character) {
+            character->update(event, map);
+        }
+    }
+}
+
+void drawCharacters(std::vector<Character*> &characters) {
+    for (auto character : characters) {
+        if (character) {
+            character->draw();
+        }
+    }
 }

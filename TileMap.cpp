@@ -61,7 +61,6 @@ void TileMap::initGrid(std::string path) {
                 tmpTile->setCollision(textureCollisions[tmpTile->getType()]);
                 tmpTile->setPosition(Point(posX, posY));
                 tmpTile->setDimensions(this->getTileDimension());
-                std::cout << this->grid.size() << std::endl;
                 this->grid[posY].push_back(tmpTile);
                 tmpInput.erase(0, pos + 1);
                 posX++;
@@ -104,9 +103,6 @@ Tile* TileMap::checkForCollision(float left, float top, float width, float heigh
 
 void TileMap::reset() {
     for (auto row : this->grid) {
-//        for (auto tile : row) {
-//            delete tile;
-//        }
         row.clear();
     }
     this->grid.clear();
