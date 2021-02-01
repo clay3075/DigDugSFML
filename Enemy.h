@@ -8,6 +8,7 @@
 #include <utility>
 #include "TileMap.h"
 #include "Character.h"
+#include <random>
 
 
 class Enemy : public Character {
@@ -20,8 +21,9 @@ private:
     void move(TileMap &map);
     void tryToKillTarget();
     int direction = 0;
-    bool moved = false;
     Character* _target = nullptr;
+    std::default_random_engine generator;
+    int randomDirection();
 };
 
 

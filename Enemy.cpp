@@ -41,16 +41,13 @@ void Enemy::move(TileMap &map) {
     if (pos.x >= 0 && spriteRight <= windowX && pos.y >= 0 && spriteBottom <= windowY) {
         setPosition(pos);
         if (checkForTileCollision(map, 1)) {
-            direction++;
+            direction = randomDirection();
             pos = resetPos;
             setPosition(pos);
-            moved = false;
-        } else {
-            moved = true;
+            move(map);
         }
     } else {
-        direction++;
-        moved = false;
+        direction = randomDirection();
     }
 }
 
@@ -61,4 +58,9 @@ void Enemy::tryToKillTarget() {
     if (checkForCollision(targetRect)) {
         _target->die();
     }
+}
+
+int Enemy::randomDirection() {
+    std::uniform_int_distribution<int> distribution(0,3);
+    return distribution(generator);
 }

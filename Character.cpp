@@ -28,6 +28,7 @@ Tile* Character::checkForTileCollision(TileMap &map, float collisionBoxBufferInP
 }
 
 void Character::draw() {
+    animate();
     _window->draw(_sprite);
 }
 
@@ -44,6 +45,27 @@ void Character::setPosition(sf::Vector2f &pos) {
 void Character::die() {
     if (_onDie)
         _onDie(this);
+}
+
+void Character::animate() {
+ if (_hasAnimation) {
+     if (_clock.getElapsedTime().asSeconds() > 1/_fps){
+         if (_rectSourceSprite.left == _frames*_rectSourceSprite.width)
+             _rectSourceSprite.left = 0;
+         else
+             _rectSourceSprite.left += _rectSourceSprite.width;
+         _sprite.setTextureRect(_rectSourceSprite);
+         _clock.restart();
+     }
+ }
+}
+
+void Character::setSpriteSheetFrameDimensions(int width, int height, int frames, float fps) {
+    _frames = frames - 1;
+    _fps = fps;
+    _rectSourceSprite.height = height;
+    _rectSourceSprite.width = width;
+    _sprite.setTextureRect(_rectSourceSprite);
 }
 
 

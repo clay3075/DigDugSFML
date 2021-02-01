@@ -13,6 +13,9 @@ public:
     Character(sf::RenderWindow*, std::string);
     bool checkForCollision(sf::Rect<float>&);
     void draw();
+    void animate();
+    void setCanAnimate(bool canAnimate) { _hasAnimation = canAnimate; }
+    void setSpriteSheetFrameDimensions(int width, int height, int frames, float fps);
     void setScale(float pixelWidth, float pixelHeight);
     void setPosition(sf::Vector2f& pos);
     sf::Vector2f getPosition() { return _sprite.getPosition(); }
@@ -30,6 +33,11 @@ protected:
     sf::RenderWindow* _window;
     void (*_onDie)(Character*) = nullptr;
     bool _readyToDestroy;
+    int _frames = 0;
+    float _fps = 0.0f;
+    sf::IntRect _rectSourceSprite;
+    bool _hasAnimation;
+    sf::Clock _clock;
 };
 
 

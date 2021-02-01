@@ -15,7 +15,7 @@ const sf::Vector2f ENEMY1_START_POS(11*64, 2*64);
 const sf::Vector2f ENEMY2_START_POS(12*64, 7*64);
 
 Enemy* createEnemy(sf::RenderWindow*, Character*, std::string, sf::Vector2f);
-void initCharacterGraphics(Character*, sf::Vector2f);
+void initCharacterGraphics(Character*, sf::Vector2f, bool);
 void onPlayerDied(Character*);
 void onEnemyDied(Character*);
 void cleanUpCharacters(std::vector<Character*> &characters);
@@ -70,8 +70,8 @@ int main()
     return 0;
 }
 
-void initCharacterGraphics(Character* character, sf::Vector2f const startPos) {
-    character->setScale(GAME_PIXEL_SIZE, GAME_PIXEL_SIZE);
+void initCharacterGraphics(Character* character, sf::Vector2f const startPos, bool setScale = true) {
+    if (setScale) character->setScale(GAME_PIXEL_SIZE, GAME_PIXEL_SIZE);
     sf::Vector2f characterStartPos(startPos.x, startPos.y);
     character->setPosition(characterStartPos);
 }
@@ -103,9 +103,11 @@ void cleanUpCharacters(std::vector<Character*> &characters) {
 }
 
 void reset(sf::RenderWindow* window, std::vector<Character*>& characters, TileMap* map) {
-    Character* player = new Player(window, "../image.png");
+    Character* player = new Player(window, "../DigDugCharacter.png");
+    player->setCanAnimate(true);
+    player->setSpriteSheetFrameDimensions(GAME_PIXEL_SIZE, GAME_PIXEL_SIZE, 3, 12);
     player->setOnDie(onPlayerDied);
-    initCharacterGraphics(player, PLAYER_START_POS);
+    initCharacterGraphics(player, PLAYER_START_POS, false);
 
     Character* enemy1 = createEnemy(window, player, "../image.png", ENEMY1_START_POS);
     Character* enemy2 = createEnemy(window, player, "../image.png", ENEMY2_START_POS);
