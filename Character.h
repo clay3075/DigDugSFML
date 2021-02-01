@@ -27,6 +27,8 @@ public:
     void setOnDie(void (*onDie)(Character*)) { _onDie = onDie; }
     void markForDestruction() { _readyToDestroy = true; }
     bool isMarkedForDestruction() { return _readyToDestroy; }
+    void startAnimation() { _isAnimating = true; }
+    void stopAnimation() { _isAnimating = false; }
 protected:
     sf::Sprite _sprite;
     sf::Texture _texture;
@@ -37,6 +39,7 @@ protected:
     float _fps = 0.0f;
     sf::IntRect _rectSourceSprite;
     bool _hasAnimation;
+    bool _isAnimating;
     sf::Clock _clock;
 };
 

@@ -11,6 +11,7 @@ void Player::update(sf::Event &event, TileMap &map) {
 }
 
 void Player::move(TileMap &map) {
+    startAnimation();
     auto pos = _sprite.getPosition();
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)) {
@@ -21,6 +22,8 @@ void Player::move(TileMap &map) {
         pos.y -= MOVE_SPEED;
     } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down)) {
         pos.y += MOVE_SPEED;
+    } else {
+        stopAnimation();
     }
 
     int windowX = _window->getSize().x;

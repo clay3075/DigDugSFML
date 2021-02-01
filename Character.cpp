@@ -48,7 +48,7 @@ void Character::die() {
 }
 
 void Character::animate() {
- if (_hasAnimation) {
+ if (_hasAnimation && _isAnimating) {
      if (_clock.getElapsedTime().asSeconds() > 1/_fps){
          if (_rectSourceSprite.left == _frames*_rectSourceSprite.width)
              _rectSourceSprite.left = 0;
