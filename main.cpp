@@ -84,8 +84,9 @@ Enemy* createEnemy(sf::RenderWindow* window, Character* player, std::string text
     return enemy;
 }
 
-void onPlayerDied(Character*) {
+void onPlayerDied(Character* player) {
     GAME_OVER = true;
+    player->stopAnimation();
 }
 
 void onEnemyDied(Character* enemy) {

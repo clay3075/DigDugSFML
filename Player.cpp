@@ -15,8 +15,12 @@ void Player::move(TileMap &map) {
     auto pos = _sprite.getPosition();
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)) {
+        _sprite.setOrigin({ _sprite.getLocalBounds().width, 0 });
+        _sprite.setScale({ -1, 1 });
         pos.x -= MOVE_SPEED;
     } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) {
+        _sprite.setOrigin({ 0, 0 });
+        _sprite.setScale({ 1, 1 });
         pos.x += MOVE_SPEED;
     } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up)) {
         pos.y -= MOVE_SPEED;
@@ -28,8 +32,15 @@ void Player::move(TileMap &map) {
 
     int windowX = _window->getSize().x;
     int windowY = _window->getSize().y;
-    int spriteRight = pos.x + _texture.getSize().x * _sprite.getScale().x;
-    int spriteBottom = pos.y + _texture.getSize().y * _sprite.getScale().y;
+    int spriteRight;
+    int spriteBottom;
+    if (_hasAnimation) {
+        spriteRight = pos.x + _rectSourceSprite.width;
+        spriteBottom = pos.y + _rectSourceSprite.height;
+    } else {
+        spriteRight = pos.x + _texture.getSize().x * _sprite.getScale().x;
+        spriteBottom = pos.y + _texture.getSize().y * _sprite.getScale().y;
+    }
 
     if (pos.x >= 0 && spriteRight <= windowX && pos.y >= 0 && spriteBottom <= windowY)
         _sprite.setPosition(pos);
