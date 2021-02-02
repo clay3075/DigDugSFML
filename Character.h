@@ -28,7 +28,11 @@ public:
     void markForDestruction() { _readyToDestroy = true; }
     bool isMarkedForDestruction() { return _readyToDestroy; }
     void startAnimation() { _isAnimating = true; }
-    void stopAnimation() { _isAnimating = false; }
+    void stopAnimation() {
+        _isAnimating = false;
+        _rectSourceSprite.left = 0;
+        _sprite.setTextureRect(_rectSourceSprite);
+    }
 protected:
     sf::Sprite _sprite;
     sf::Texture _texture;

@@ -45,6 +45,8 @@ void Enemy::move(TileMap &map) {
             pos = resetPos;
             setPosition(pos);
             move(map);
+        } else {
+
         }
     } else {
         direction = randomDirection();

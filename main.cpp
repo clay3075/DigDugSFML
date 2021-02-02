@@ -29,7 +29,7 @@ int main()
 {
     TileMap map("../map.txt");
 
-    sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "SFML Application");
+    sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Dig Dug Reimagined");
     window.setFramerateLimit(FRAME_RATE_LIMIT);
     TileMapRenderer mapRenderer(&window, &map);
 
