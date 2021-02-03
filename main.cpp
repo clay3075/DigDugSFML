@@ -22,13 +22,22 @@ void cleanUpCharacters(std::vector<Character*> &characters);
 void updateCharacters(std::vector<Character*> &characters, sf::Event &event, TileMap &map);
 void drawCharacters(std::vector<Character*> &characters);
 void reset(sf::RenderWindow*, std::vector<Character*>&, TileMap* map = nullptr);
+void playerOnAttack(Player*);
+void drawAttack(sf::RenderWindow*);
+void attackCooldown();
 
 bool GAME_OVER;
+bool attacking;
+sf::Texture attackTexture;
+sf::Sprite attackSprite;
+sf::Clock attackClock;
+TileMap map("../map.txt");
+Player* player;
 
 int main()
 {
-    TileMap map("../map.txt");
-
+    attackTexture.loadFromFile("../image.png");
+    attackSprite.setTexture(attackTexture);
     sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Dig Dug Reimagined");
     window.setFramerateLimit(FRAME_RATE_LIMIT);
     TileMapRenderer mapRenderer(&window, &map);
@@ -49,6 +58,7 @@ int main()
 
         if (!GAME_OVER) {
             updateCharacters(characters, event, map);
+            attackCooldown();
         } else {
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) {
                 reset(&window, characters, &map);
@@ -61,6 +71,7 @@ int main()
         window.clear();
         mapRenderer.draw();
         drawCharacters(characters);
+        drawAttack(&window);
         window.display();
     }
 
@@ -77,8 +88,10 @@ void initCharacterGraphics(Character* character, sf::Vector2f const startPos, bo
 }
 
 Enemy* createEnemy(sf::RenderWindow* window, Character* player, std::string texturePath, sf::Vector2f const startPos) {
-    auto enemy = new Enemy(window, "../image.png");
-    initCharacterGraphics(enemy, startPos);
+    auto enemy = new Enemy(window, "../DigDugMonster.png");
+    initCharacterGraphics(enemy, startPos, false);
+    enemy->setCanAnimate(true);
+    enemy->setSpriteSheetFrameDimensions(GAME_PIXEL_SIZE, GAME_PIXEL_SIZE, 3, 12);
     enemy->setTarget(player);
     enemy->setOnDie(onEnemyDied);
     return enemy;
@@ -104,17 +117,21 @@ void cleanUpCharacters(std::vector<Character*> &characters) {
 }
 
 void reset(sf::RenderWindow* window, std::vector<Character*>& characters, TileMap* map) {
-    Character* player = new Player(window, "../DigDugCharacter.png");
+    player = new Player(window, "../DigDugCharacter.png");
     player->setCanAnimate(true);
     player->setSpriteSheetFrameDimensions(GAME_PIXEL_SIZE, GAME_PIXEL_SIZE, 3, 12);
     player->setOnDie(onPlayerDied);
+    player->setOnAttack(playerOnAttack);
     initCharacterGraphics(player, PLAYER_START_POS, false);
 
-    Character* enemy1 = createEnemy(window, player, "../image.png", ENEMY1_START_POS);
-    Character* enemy2 = createEnemy(window, player, "../image.png", ENEMY2_START_POS);
+    Enemy* enemy1 = createEnemy(window, player, "../image.png", ENEMY1_START_POS);
+    Enemy* enemy2 = createEnemy(window, player, "../image.png", ENEMY2_START_POS);
 
     std::vector<Character*> tmpCharacters = {player, enemy1, enemy2};
 
+    for(auto character : characters) {
+        delete character;
+    }
     characters.clear();
     characters.assign(tmpCharacters.begin(), tmpCharacters.end());
     if (map) map->reset();
@@ -133,5 +150,33 @@ void drawCharacters(std::vector<Character*> &characters) {
         if (character) {
             character->draw();
         }
+    }
+}
+
+void playerOnAttack(Player* player) {
+    auto playerRect = player->getGlobalBoundingBox();
+
+    int width = player->getDirection() == Direction::Right ? playerRect.width : -playerRect.width;
+    attacking = !map.checkForCollision(playerRect.left + width, playerRect.top, playerRect.width, playerRect.height, 8);
+    if (player->canAttack() && attacking) {
+        attackSprite.setPosition(playerRect.left + width, playerRect.top);
+        double textureWidth = attackSprite.getTexture()->getSize().x;
+        double textureHeight = attackSprite.getTexture()->getSize().y;
+        attackSprite.setScale(GAME_PIXEL_SIZE / textureWidth, GAME_PIXEL_SIZE / textureHeight);
+        player->setCanMove(false);
+        player->setCanAttack(false);
+        attackClock.restart();
+    };
+}
+
+void drawAttack(sf::RenderWindow* window) {
+    if (attacking) window->draw(attackSprite);
+}
+
+void attackCooldown() {
+    if (attackClock.getElapsedTime().asMilliseconds() > 1000) {
+        attacking = false;
+        player->setCanAttack(true);
+        player->setCanMove(true);
     }
 }

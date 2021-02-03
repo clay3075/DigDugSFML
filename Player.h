@@ -13,8 +13,18 @@ public:
     Player(sf::RenderWindow* window, std::string texturePath) : Character(window, std::move(texturePath)) {};
 
     void update(sf::Event&, TileMap&) override;
+    void setOnAttack(void (* attack)(Player*)) { _attack = attack; }
+    void setCanMove(bool canMove) {
+        _canMove = canMove;
+        if (!_canMove) stopAnimation();
+    }
+    void setCanAttack(bool canAttack) { _canAttack = canAttack; }
+    bool canAttack() { return _canAttack; }
 private:
     void move(TileMap &map);
+    void (* _attack)(Player*);
+    bool _canMove = true;
+    bool _canAttack = true;
 };
 
 

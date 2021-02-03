@@ -14,22 +14,27 @@ void Enemy::update(sf::Event &event, TileMap &map) {
 void Enemy::move(TileMap &map) {
     auto pos = _sprite.getPosition();
     auto resetPos = pos;
+    startAnimation();
 
     switch (direction) {
-        case 0:
+        case Direction::Right:
             pos.x += MOVE_SPEED;
+            _sprite.setOrigin({ 0, 0 });
+            _sprite.setScale({ 1, 1 });
             break;
-        case 1:
+        case Direction::Left:
             pos.x -= MOVE_SPEED;
+            _sprite.setOrigin({ _sprite.getLocalBounds().width, 0 });
+            _sprite.setScale({ -1, 1 });
             break;
-        case 2:
+        case Direction::Up:
             pos.y += MOVE_SPEED;
             break;
-        case 3:
+        case Direction::Down:
             pos.y -= MOVE_SPEED;
             break;
         default:
-            direction = 0;
+            direction = Direction::Right;
             break;
     }
 
@@ -41,15 +46,14 @@ void Enemy::move(TileMap &map) {
     if (pos.x >= 0 && spriteRight <= windowX && pos.y >= 0 && spriteBottom <= windowY) {
         setPosition(pos);
         if (checkForTileCollision(map, 1)) {
-            direction = randomDirection();
+            stopAnimation();
+            direction = static_cast<Direction>(randomDirection());
             pos = resetPos;
             setPosition(pos);
             move(map);
-        } else {
-
         }
     } else {
-        direction = randomDirection();
+        direction = static_cast<Direction>(randomDirection());
     }
 }
 

@@ -78,7 +78,7 @@ Tile* TileMap::checkForCollision(float x, float y) {
     x = ceil(x/this->tileDimensions.width) - 1;
     y = ceil(y/this->tileDimensions.height) - 1;
 
-    if (y >= this->grid.size() || x >= this->grid[y].size())
+    if (y >= this->grid.size() || x >= this->grid[y].size() || y < 0 || x < 0)
         return NULL;
 
     Tile* tile = this->grid[y][x];

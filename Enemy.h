@@ -20,7 +20,6 @@ public:
 private:
     void move(TileMap &map);
     void tryToKillTarget();
-    int direction = 0;
     Character* _target = nullptr;
     std::default_random_engine generator;
     int randomDirection();

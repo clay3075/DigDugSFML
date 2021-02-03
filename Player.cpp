@@ -7,7 +7,8 @@
 const int MOVE_SPEED = 4;
 
 void Player::update(sf::Event &event, TileMap &map) {
-    move(map);
+    if (_canMove) move(map);
+    if (_canAttack && _attack && sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) _attack(this);
 }
 
 void Player::move(TileMap &map) {
@@ -18,9 +19,11 @@ void Player::move(TileMap &map) {
         _sprite.setOrigin({ _sprite.getLocalBounds().width, 0 });
         _sprite.setScale({ -1, 1 });
         pos.x -= MOVE_SPEED;
+        direction = Direction::Left;
     } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) {
         _sprite.setOrigin({ 0, 0 });
         _sprite.setScale({ 1, 1 });
+        direction = Direction::Right;
         pos.x += MOVE_SPEED;
     } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up)) {
         pos.y -= MOVE_SPEED;
@@ -42,7 +45,7 @@ void Player::move(TileMap &map) {
         spriteBottom = pos.y + _texture.getSize().y * _sprite.getScale().y;
     }
 
-    if (pos.x >= 0 && spriteRight <= windowX && pos.y >= 0 && spriteBottom <= windowY)
+    if (_canMove && pos.x >= 0 && spriteRight <= windowX && pos.y >= 0 && spriteBottom <= windowY)
         _sprite.setPosition(pos);
 
     Tile* tile = checkForTileCollision(map, 8);

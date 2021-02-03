@@ -7,6 +7,7 @@
 #include <SFML/Graphics.hpp>
 #include "TileMap.h"
 #include <string>
+#include "Direction.h"
 
 class Character {
 public:
@@ -33,6 +34,7 @@ public:
         _rectSourceSprite.left = 0;
         _sprite.setTextureRect(_rectSourceSprite);
     }
+    Direction getDirection() { return direction; }
 protected:
     sf::Sprite _sprite;
     sf::Texture _texture;
@@ -45,6 +47,7 @@ protected:
     bool _hasAnimation;
     bool _isAnimating;
     sf::Clock _clock;
+    Direction direction = Direction::Right;
 };
 
 
