@@ -33,6 +33,7 @@ sf::Sprite attackSprite;
 sf::Clock attackClock;
 TileMap map("../map.txt");
 Player* player;
+std::vector<Character*> characters;
 
 int main()
 {
@@ -42,7 +43,6 @@ int main()
     window.setFramerateLimit(FRAME_RATE_LIMIT);
     TileMapRenderer mapRenderer(&window, &map);
 
-    std::vector<Character*> characters;
     reset(&window, characters);
 
     while (window.isOpen())
@@ -99,7 +99,10 @@ Enemy* createEnemy(sf::RenderWindow* window, Character* player, std::string text
 
 void onPlayerDied(Character* player) {
     GAME_OVER = true;
-    player->stopAnimation();
+    for (auto character : characters) {
+        character->setCanAnimate(false);
+    }
+//    player->stopAnimation();
 }
 
 void onEnemyDied(Character* enemy) {

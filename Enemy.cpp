@@ -63,6 +63,7 @@ void Enemy::tryToKillTarget() {
     auto targetRect = _target->getGlobalBoundingBox();
     if (checkForCollision(targetRect)) {
         _target->die();
+        if (_onKilledTarget) _onKilledTarget(_target, this);
     }
 }
 

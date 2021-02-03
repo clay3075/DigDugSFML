@@ -22,7 +22,7 @@ public:
     bool canAttack() { return _canAttack; }
 private:
     void move(TileMap &map);
-    void (* _attack)(Player*);
+    void (* _attack)(Player*) = nullptr;
     bool _canMove = true;
     bool _canAttack = true;
 };

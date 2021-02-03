@@ -17,9 +17,11 @@ public:
 
     void update(sf::Event&, TileMap&) override;
     void setTarget(Character* target) { _target = target; }
+    void setOnKilledTarget(void (* onKilledTarget)(Character*, Enemy*)) { _onKilledTarget = onKilledTarget; }
 private:
     void move(TileMap &map);
     void tryToKillTarget();
+    void (* _onKilledTarget)(Character*, Enemy*) = nullptr;
     Character* _target = nullptr;
     std::default_random_engine generator;
     int randomDirection();
