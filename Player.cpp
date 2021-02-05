@@ -29,32 +29,21 @@ void Player::move(TileMap &map) {
     auto pos = _sprite.getPosition();
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)) {
-        _sprite.setOrigin({ _sprite.getLocalBounds().width, 0 });
-        _sprite.setScale({ -1, 1 });
-        _sprite.setRotation(0);
         pos.x -= MOVE_SPEED;
         direction = Direction::Left;
     } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) {
-        _sprite.setOrigin({ 0, 0 });
-        _sprite.setScale({ 1, 1 });
-        _sprite.setRotation(0);
         direction = Direction::Right;
         pos.x += MOVE_SPEED;
     } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up)) {
-        _sprite.setOrigin({ _sprite.getLocalBounds().width, _sprite.getLocalBounds().height-64 });
-        _sprite.setScale({ 1, 1 });
-        _sprite.setRotation(-90);
         direction = Direction::Up;
         pos.y -= MOVE_SPEED;
     } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down)) {
-        _sprite.setOrigin({ _sprite.getLocalBounds().width-64, _sprite.getLocalBounds().height });
-        _sprite.setScale({ 1, 1 });
-        _sprite.setRotation(90);
         direction = Direction::Down;
         pos.y += MOVE_SPEED;
     } else {
         stopAnimation();
     }
+    rotateSpriteBasedOnInput(_sprite);
 
     int windowX = _window->getSize().x;
     int windowY = _window->getSize().y;
@@ -94,23 +83,7 @@ void Player::attack(TileMap &map) {
     }
 
     if (this->canAttack() && _attacking) {
-        if (direction == Direction::Left) {
-            _attackSprite.setOrigin({ _attackSprite.getLocalBounds().width, 0 });
-            _attackSprite.setScale({ -1, 1 });
-            _attackSprite.setRotation(0);
-        } else if (direction == Direction::Right) {
-            _attackSprite.setOrigin({ 0, 0 });
-            _attackSprite.setScale({ 1, 1 });
-            _attackSprite.setRotation(0);
-        } else if (direction == Direction::Up) {
-            _attackSprite.setOrigin({ _attackSprite.getLocalBounds().width, _attackSprite.getLocalBounds().height-64 });
-            _attackSprite.setScale({ 1, 1 });
-            _attackSprite.setRotation(-90);
-        } else if (direction == Direction::Down) {
-            _attackSprite.setOrigin({ _attackSprite.getLocalBounds().width-64, _attackSprite.getLocalBounds().height });
-            _attackSprite.setScale({ 1, 1 });
-            _attackSprite.setRotation(90);
-        }
+        rotateSpriteBasedOnInput(_attackSprite);
         this->setCanMove(false);
         this->setCanAttack(false);
         this->_rectSourceSprite.left = 3*64;
@@ -133,5 +106,30 @@ void Player::attackCooldown() {
 void Player::draw() {
     Character::draw();
     if (_attacking) _window->draw(_attackSprite);
+}
+
+void Player::rotateSpriteBasedOnInput(sf::Sprite &sprite) {
+    switch (direction) {
+        case Direction::Left:
+            sprite.setOrigin({ sprite.getLocalBounds().width, 0 });
+            sprite.setScale({ -1, 1 });
+            sprite.setRotation(0);
+            break;
+        case Direction::Right:
+            sprite.setOrigin({ 0, 0 });
+            sprite.setScale({ 1, 1 });
+            sprite.setRotation(0);
+            break;
+        case Direction::Up:
+            sprite.setOrigin({ sprite.getLocalBounds().width, sprite.getLocalBounds().height-64 });
+            sprite.setScale({ 1, 1 });
+            sprite.setRotation(-90);
+            break;
+        case Direction::Down:
+            sprite.setOrigin({ sprite.getLocalBounds().width-64, sprite.getLocalBounds().height-64 });
+            sprite.setScale({ -1, 1 });
+            sprite.setRotation(-90);
+            break;
+    }
 }
 

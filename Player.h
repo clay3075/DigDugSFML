@@ -32,6 +32,7 @@ private:
     sf::Clock _attackClock;
     bool _attacking = false;
     void draw() override;
+    void rotateSpriteBasedOnInput(sf::Sprite&);
 };
 
 
