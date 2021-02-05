@@ -44,11 +44,13 @@ void Player::move(TileMap &map) {
         _sprite.setOrigin({ _sprite.getLocalBounds().width, _sprite.getLocalBounds().height-64 });
         _sprite.setScale({ 1, 1 });
         _sprite.setRotation(-90);
+        direction = Direction::Up;
         pos.y -= MOVE_SPEED;
     } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down)) {
         _sprite.setOrigin({ _sprite.getLocalBounds().width-64, _sprite.getLocalBounds().height });
         _sprite.setScale({ 1, 1 });
         _sprite.setRotation(90);
+        direction = Direction::Down;
         pos.y += MOVE_SPEED;
     } else {
         stopAnimation();
@@ -79,21 +81,32 @@ void Player::move(TileMap &map) {
 void Player::attack(TileMap &map) {
     auto playerRect = this->getGlobalBoundingBox();
 
-    int width = this->getDirection() == Direction::Right ? playerRect.width : -playerRect.width;
-    _attacking = !map.checkForCollision(playerRect.left + width, playerRect.top, playerRect.width, playerRect.height, 8);
+    if (this->getDirection() == Direction::Left || this->getDirection() == Direction::Right) {
+        int width = this->getDirection() == Direction::Right ? playerRect.width : -playerRect.width;
+        _attacking = !map.checkForCollision(playerRect.left + width, playerRect.top, playerRect.width, playerRect.height, 8);
+        if (this->canAttack() && _attacking) _attackSprite.setPosition(playerRect.left + width, playerRect.top);
+    }
+
+    if (this->getDirection() == Direction::Up || this->getDirection() == Direction::Down) {
+        int height = this->getDirection() == Direction::Up ? -playerRect.height : playerRect.height;
+        _attacking = !map.checkForCollision(playerRect.left, playerRect.top + height, playerRect.width, playerRect.height, 8);
+        if (this->canAttack() && _attacking)  _attackSprite.setPosition(playerRect.left, playerRect.top + height);
+    }
+
     if (this->canAttack() && _attacking) {
-        _attackSprite.setPosition(playerRect.left + width, playerRect.top);
         if (direction == Direction::Left) {
             _attackSprite.setOrigin({ _attackSprite.getLocalBounds().width, 0 });
             _attackSprite.setScale({ -1, 1 });
+            _attackSprite.setRotation(0);
         } else if (direction == Direction::Right) {
             _attackSprite.setOrigin({ 0, 0 });
             _attackSprite.setScale({ 1, 1 });
-        } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up)) {
+            _attackSprite.setRotation(0);
+        } else if (direction == Direction::Up) {
             _attackSprite.setOrigin({ _attackSprite.getLocalBounds().width, _attackSprite.getLocalBounds().height-64 });
             _attackSprite.setScale({ 1, 1 });
             _attackSprite.setRotation(-90);
-        } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down)) {
+        } else if (direction == Direction::Down) {
             _attackSprite.setOrigin({ _attackSprite.getLocalBounds().width-64, _attackSprite.getLocalBounds().height });
             _attackSprite.setScale({ 1, 1 });
             _attackSprite.setRotation(90);
