@@ -63,6 +63,7 @@ void Character::animate() {
 void Character::setSpriteSheetFrameDimensions(int width, int height, int frames, float fps) {
     _frames = frames - 1;
     _fps = fps;
+//    _rectSourceSprite.left = 0;
     _rectSourceSprite.height = height;
     _rectSourceSprite.width = width;
     _sprite.setTextureRect(_rectSourceSprite);

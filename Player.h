@@ -10,10 +10,10 @@
 
 class Player : public Character {
 public:
-    Player(sf::RenderWindow* window, std::string texturePath) : Character(window, std::move(texturePath)) {};
+    explicit Player(sf::RenderWindow* window);
 
     void update(sf::Event&, TileMap&) override;
-    void setOnAttack(void (* attack)(Player*)) { _attack = attack; }
+    void setOnAttack(void (* attack)(Player*)) { _onAttack = attack; }
     void setCanMove(bool canMove) {
         _canMove = canMove;
         if (!_canMove) stopAnimation();
@@ -22,9 +22,16 @@ public:
     bool canAttack() { return _canAttack; }
 private:
     void move(TileMap &map);
-    void (* _attack)(Player*) = nullptr;
+    void attack(TileMap &map);
+    void (* _onAttack)(Player*) = nullptr;
+    void attackCooldown();
     bool _canMove = true;
     bool _canAttack = true;
+    sf::Texture _attackTexture;
+    sf::Sprite _attackSprite;
+    sf::Clock _attackClock;
+    bool _attacking = false;
+    void draw() override;
 };
 
 

@@ -13,8 +13,8 @@ class Character {
 public:
     Character(sf::RenderWindow*, std::string);
     bool checkForCollision(sf::Rect<float>&);
-    void draw();
-    void animate();
+    virtual void draw();
+    virtual void animate();
     void setCanAnimate(bool canAnimate) { _hasAnimation = canAnimate; }
     void setSpriteSheetFrameDimensions(int width, int height, int frames, float fps);
     void setScale(float pixelWidth, float pixelHeight);
@@ -46,8 +46,9 @@ protected:
     sf::IntRect _rectSourceSprite;
     bool _hasAnimation;
     bool _isAnimating;
-    sf::Clock _clock;
     Direction direction = Direction::Right;
+private:
+    sf::Clock _clock;
 };
 
 
