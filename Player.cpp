@@ -2,9 +2,10 @@
 // Created by Clay Reddick on 1/30/21.
 //
 
+#include <iostream>
 #include "Player.h"
 
-const int MOVE_SPEED = 4;
+const int MOVE_SPEED = 8;
 
 Player::Player(sf::RenderWindow *window) : Character(window, "../DigDugCharacter.png") {
     {
@@ -26,22 +27,40 @@ void Player::update(sf::Event &event, TileMap &map) {
 
 void Player::move(TileMap &map) {
     startAnimation();
+
     auto pos = _sprite.getPosition();
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)) {
-        pos.x -= MOVE_SPEED;
-        direction = Direction::Left;
+        if (direction != Direction::Left) {
+            interpolate(pos);
+            direction = Direction::Left;
+        } else {
+            pos.x -= MOVE_SPEED;
+        }
     } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) {
-        direction = Direction::Right;
-        pos.x += MOVE_SPEED;
+        if (direction != Direction::Right) {
+            interpolate(pos);
+            direction = Direction::Right;
+        } else {
+            pos.x += MOVE_SPEED;
+        }
     } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up)) {
-        direction = Direction::Up;
-        pos.y -= MOVE_SPEED;
+        if (direction != Direction::Up) {
+            interpolate(pos);
+            direction = Direction::Up;
+        } else {
+            pos.y -= MOVE_SPEED;
+        }
     } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down)) {
-        direction = Direction::Down;
-        pos.y += MOVE_SPEED;
+        if (direction != Direction::Down) {
+            interpolate(pos);
+            direction = Direction::Down;
+        } else {
+            pos.y += MOVE_SPEED;
+        }
     } else {
         stopAnimation();
+        interpolate(pos);
     }
     rotateSpriteBasedOnInput(_sprite);
 
@@ -88,6 +107,7 @@ void Player::attack(TileMap &map) {
         this->setCanAttack(false);
         this->_rectSourceSprite.left = 3*64;
         this->_sprite.setTextureRect(this->_rectSourceSprite);
+
         _attackClock.restart();
         if(_onAttack) _onAttack(this);
     }
@@ -100,6 +120,15 @@ void Player::attackCooldown() {
         setCanMove(true);
         this->_rectSourceSprite.left = 0;
         this->_sprite.setTextureRect(this->_rectSourceSprite);
+        this->_attackSprite.setPosition(-64, -64);
+    }
+
+    if (_attacking) {
+        for(Enemy* enemy : _enemies) {
+            if (enemy && enemy->getGlobalBoundingBox().intersects(_attackSprite.getGlobalBounds())) {
+                enemy->die();
+            }
+        }
     }
 }
 
@@ -130,6 +159,36 @@ void Player::rotateSpriteBasedOnInput(sf::Sprite &sprite) {
             sprite.setScale({ -1, 1 });
             sprite.setRotation(-90);
             break;
+    }
+}
+
+void Player::interpolate(sf::Vector2<float> &pos) {
+    auto modX = (int) pos.x % 64;
+    auto modY = (int) pos.y % 64;
+
+    switch (direction) {
+        case Right:
+            if(modX != 0) {
+                pos.x = (int)pos.x - modX + 64;
+            }
+            break;
+        case Left: {
+            if(modX != 0) {
+                pos.x = (int)pos.x - modX;
+            }
+            break;
+        }
+        case Up:
+            if(modY != 0) {
+                pos.y = (int)pos.y - modY;
+            }
+            break;
+        case Down: {
+            if(modY != 0) {
+                pos.y = (int)pos.y - modY + 64;
+            }
+            break;
+        }
     }
 }
 

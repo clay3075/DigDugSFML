@@ -18,6 +18,7 @@ public:
     void update(sf::Event&, TileMap&) override;
     void setTarget(Character* target) { _target = target; }
     void setOnKilledTarget(void (* onKilledTarget)(Character*, Enemy*)) { _onKilledTarget = onKilledTarget; }
+    void setCanMove(bool canMove) { _canMove = canMove; }
 private:
     void move(TileMap &map);
     void tryToKillTarget();
@@ -25,6 +26,7 @@ private:
     Character* _target = nullptr;
     std::default_random_engine generator;
     int randomDirection();
+    bool _canMove = true;
 };
 
 

@@ -7,7 +7,7 @@
 const int MOVE_SPEED = 4;
 
 void Enemy::update(sf::Event &event, TileMap &map) {
-    move(map);
+    if(_canMove) move(map);
     tryToKillTarget();
 }
 

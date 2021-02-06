@@ -21,7 +21,6 @@ void cleanUpCharacters(std::vector<Character*> &characters);
 void updateCharacters(std::vector<Character*> &characters, sf::Event &event, TileMap &map);
 void drawCharacters(std::vector<Character*> &characters);
 void reset(sf::RenderWindow*, std::vector<Character*>&, TileMap* map = nullptr);
-void playerOnAttack(Player*);
 
 bool GAME_OVER;
 std::vector<Character*> characters;
@@ -37,7 +36,7 @@ int main()
 
     while (window.isOpen())
     {
-        sf::Event event;
+        sf::Event event{};
 
         while (window.pollEvent(event))
         {
@@ -109,6 +108,7 @@ void reset(sf::RenderWindow* window, std::vector<Character*>& characters, TileMa
     Enemy* enemy2 = createEnemy(window, player, ENEMY2_START_POS);
 
     std::vector<Character*> tmpCharacters = {player, enemy1, enemy2};
+    player->setEnemies({enemy1, enemy2});
 
     for(auto character : characters) {
         delete character;

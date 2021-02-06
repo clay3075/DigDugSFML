@@ -7,6 +7,7 @@
 #include <utility>
 
 #include "Character.h"
+#include "Enemy.h"
 
 class Player : public Character {
 public:
@@ -20,19 +21,24 @@ public:
     }
     void setCanAttack(bool canAttack) { _canAttack = canAttack; }
     bool canAttack() { return _canAttack; }
+    void setEnemies(std::vector<Enemy*> enemies) { _enemies = enemies; }
 private:
+    // methods
     void move(TileMap &map);
     void attack(TileMap &map);
-    void (* _onAttack)(Player*) = nullptr;
     void attackCooldown();
+    void draw() override;
+    void rotateSpriteBasedOnInput(sf::Sprite&);
+    void interpolate(sf::Vector2<float>&);
+    // properties
     bool _canMove = true;
     bool _canAttack = true;
+    bool _attacking = false;
     sf::Texture _attackTexture;
     sf::Sprite _attackSprite;
     sf::Clock _attackClock;
-    bool _attacking = false;
-    void draw() override;
-    void rotateSpriteBasedOnInput(sf::Sprite&);
+    void (* _onAttack)(Player*) = nullptr;
+    std::vector<Enemy*> _enemies;
 };
 
 
