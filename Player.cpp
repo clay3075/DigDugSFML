@@ -5,7 +5,8 @@
 #include <iostream>
 #include "Player.h"
 
-const int MOVE_SPEED = 8;
+const int MOVE_SPEED = 6;
+const int ATTACK_COOLDOWN = 500; // milliseconds
 
 Player::Player(sf::RenderWindow *window) : Character(window, "../DigDugCharacter.png") {
     {
@@ -114,7 +115,7 @@ void Player::attack(TileMap &map) {
 }
 
 void Player::attackCooldown() {
-    if (_attackClock.getElapsedTime().asMilliseconds() > 1000) {
+    if (_attackClock.getElapsedTime().asMilliseconds() > ATTACK_COOLDOWN) {
         _attacking = false;
         setCanAttack(true);
         setCanMove(true);

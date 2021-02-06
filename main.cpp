@@ -3,6 +3,7 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "Dragon.h"
+#include "UIManager.h"
 #include <iostream>
 #include <vector>
 
@@ -23,6 +24,8 @@ void drawCharacters(std::vector<Character*> &characters);
 void reset(sf::RenderWindow*, std::vector<Character*>&, TileMap* map = nullptr);
 
 bool GAME_OVER;
+int enemiesKilled = 0;
+int numberOfEnemies = 0;
 std::vector<Character*> characters;
 
 int main()
@@ -31,6 +34,8 @@ int main()
     sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Dig Dug Reimagined");
     window.setFramerateLimit(FRAME_RATE_LIMIT);
     TileMapRenderer mapRenderer(&window, &map);
+    Dimensions screenDim(SCREEN_WIDTH, SCREEN_HEIGHT);
+    UIManager uiManager(&window, screenDim);
 
     reset(&window, characters);
 
@@ -59,6 +64,8 @@ int main()
         window.clear();
         mapRenderer.draw();
         drawCharacters(characters);
+        uiManager.drawScore(enemiesKilled, .025f, .025f, 25);
+        if(GAME_OVER) uiManager.drawGameOver(numberOfEnemies == enemiesKilled, .39f, .40f, 50);
         window.display();
     }
 
@@ -85,6 +92,10 @@ void onPlayerDied(Character* player) {
 }
 
 void onEnemyDied(Character* enemy) {
+    enemiesKilled++;
+    if (numberOfEnemies == enemiesKilled) {
+        GAME_OVER = true;
+    }
     enemy->markForDestruction();
 }
 
@@ -106,6 +117,7 @@ void reset(sf::RenderWindow* window, std::vector<Character*>& characters, TileMa
 
     Enemy* enemy1 = createEnemy(window, player, ENEMY1_START_POS);
     Enemy* enemy2 = createEnemy(window, player, ENEMY2_START_POS);
+    numberOfEnemies = 2;
 
     std::vector<Character*> tmpCharacters = {player, enemy1, enemy2};
     player->setEnemies({enemy1, enemy2});
@@ -116,6 +128,7 @@ void reset(sf::RenderWindow* window, std::vector<Character*>& characters, TileMa
     characters.clear();
     characters.assign(tmpCharacters.begin(), tmpCharacters.end());
     if (map) map->reset();
+    enemiesKilled = 0;
 }
 
 void updateCharacters(std::vector<Character*> &characters, sf::Event &event, TileMap &map) {
