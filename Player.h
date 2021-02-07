@@ -34,6 +34,7 @@ private:
     bool _canMove = true;
     bool _canAttack = true;
     bool _attacking = false;
+    bool _lerping = false;
     sf::Texture _attackTexture;
     sf::Sprite _attackSprite;
     sf::Clock _attackClock;

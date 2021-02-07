@@ -4,21 +4,20 @@
 
 #include <iostream>
 #include "Player.h"
+#include <cmath>
 
 const int MOVE_SPEED = 6;
 const int ATTACK_COOLDOWN = 500; // milliseconds
 
 Player::Player(sf::RenderWindow *window) : Character(window, "../DigDugCharacter.png") {
-    {
-        setCanAnimate(true);
-        setSpriteSheetFrameDimensions(64, 64, 3, 12);
+    setCanAnimate(true);
+    setSpriteSheetFrameDimensions(64, 64, 3, 12);
 
-        _attackTexture = _texture;
-        sf::IntRect rect(4*64, 0, 64, 64);
-        _attackSprite.setTexture(_attackTexture);
-        _attackSprite.setTextureRect(rect);
-    };
-}
+    _attackTexture = _texture;
+    sf::IntRect rect(4*64, 0, 64, 64);
+    _attackSprite.setTexture(_attackTexture);
+    _attackSprite.setTextureRect(rect);
+};
 
 void Player::update(sf::Event &event, TileMap &map) {
     attackCooldown();
@@ -34,6 +33,7 @@ void Player::move(TileMap &map) {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)) {
         if (direction != Direction::Left) {
             interpolate(pos);
+            if (_lerping) return;
             direction = Direction::Left;
         } else {
             pos.x -= MOVE_SPEED;
@@ -41,6 +41,7 @@ void Player::move(TileMap &map) {
     } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) {
         if (direction != Direction::Right) {
             interpolate(pos);
+            if (_lerping) return;
             direction = Direction::Right;
         } else {
             pos.x += MOVE_SPEED;
@@ -48,6 +49,7 @@ void Player::move(TileMap &map) {
     } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up)) {
         if (direction != Direction::Up) {
             interpolate(pos);
+            if (_lerping) return;
             direction = Direction::Up;
         } else {
             pos.y -= MOVE_SPEED;
@@ -55,6 +57,7 @@ void Player::move(TileMap &map) {
     } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down)) {
         if (direction != Direction::Down) {
             interpolate(pos);
+            if (_lerping) return;
             direction = Direction::Down;
         } else {
             pos.y += MOVE_SPEED;
@@ -166,30 +169,51 @@ void Player::rotateSpriteBasedOnInput(sf::Sprite &sprite) {
 void Player::interpolate(sf::Vector2<float> &pos) {
     auto modX = (int) pos.x % 64;
     auto modY = (int) pos.y % 64;
+    float lerpSpeed = .5f;
 
     switch (direction) {
         case Right:
-            if(modX != 0) {
-                pos.x = (int)pos.x - modX + 64;
+            if (modX != 0) {
+                int dest = (int)pos.x - modX + 64;
+                pos.x = std::lerp(pos.x, (float)dest, lerpSpeed);
+                _lerping = std::round(pos.x - dest) != 0;
+            } else {
+                _lerping = false;
             }
             break;
         case Left: {
-            if(modX != 0) {
-                pos.x = (int)pos.x - modX;
+            if (modX != 0) {
+                int dest = (int)pos.x - modX;
+                pos.x = std::lerp(pos.x, (float)dest, lerpSpeed);
+                _lerping = std::round(pos.x - dest) != 0;
+            } else {
+                _lerping = false;
             }
             break;
         }
         case Up:
-            if(modY != 0) {
-                pos.y = (int)pos.y - modY;
+            if (modY != 0) {
+                int dest = (int)pos.y - modY;
+                pos.y = std::lerp(pos.y, (float)dest, lerpSpeed);
+                _lerping = std::round(pos.y - dest) != 0;
+            } else {
+                _lerping = false;
             }
             break;
         case Down: {
-            if(modY != 0) {
-                pos.y = (int)pos.y - modY + 64;
+            if (modY != 0) {
+                int dest = (int)pos.y - modY + 64;
+                pos.y = std::lerp(pos.y, (float)dest, lerpSpeed);
+                _lerping = std::round(pos.y - dest) != 0;
+            } else {
+                _lerping = false;
             }
             break;
         }
+        default:
+            _lerping = false;
+            break;
     }
+    _sprite.setPosition(pos);
 }
 
