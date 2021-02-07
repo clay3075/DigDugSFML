@@ -11,7 +11,7 @@
 
 class Player : public Character {
 public:
-    explicit Player(sf::RenderWindow* window);
+    Player(sf::RenderWindow* window, Dimensions screen);
 
     void update(sf::Event&, TileMap&) override;
     void setOnAttack(void (* attack)(Player*)) { _onAttack = attack; }
@@ -40,6 +40,7 @@ private:
     sf::Clock _attackClock;
     void (* _onAttack)(Player*) = nullptr;
     std::vector<Enemy*> _enemies;
+    Dimensions _screenDim;
 };
 
 

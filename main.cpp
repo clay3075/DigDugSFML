@@ -21,7 +21,7 @@ void onEnemyDied(Character*);
 void cleanUpCharacters(std::vector<Character*> &characters);
 void updateCharacters(std::vector<Character*> &characters, sf::Event &event, TileMap &map);
 void drawCharacters(std::vector<Character*> &characters);
-void reset(sf::RenderWindow*, std::vector<Character*>&, TileMap* map = nullptr);
+void reset(sf::RenderWindow*, std::vector<Character*>&, Dimensions screenDim, TileMap* map = nullptr);
 
 bool GAME_OVER;
 int enemiesKilled = 0;
@@ -37,7 +37,7 @@ int main()
     Dimensions screenDim(SCREEN_WIDTH, SCREEN_HEIGHT);
     UIManager uiManager(&window, screenDim);
 
-    reset(&window, characters);
+    reset(&window, characters, screenDim);
 
     while (window.isOpen())
     {
@@ -54,7 +54,7 @@ int main()
             updateCharacters(characters, event, map);
         } else {
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) {
-                reset(&window, characters, &map);
+                reset(&window, characters, screenDim, &map);
                 GAME_OVER = false;
             }
         }
@@ -109,8 +109,8 @@ void cleanUpCharacters(std::vector<Character*> &characters) {
     }
 }
 
-void reset(sf::RenderWindow* window, std::vector<Character*>& characters, TileMap* map) {
-    Player* player = new Player(window);
+void reset(sf::RenderWindow* window, std::vector<Character*>& characters, Dimensions screenDim, TileMap* map) {
+    Player* player = new Player(window, screenDim);
 
     player->setOnDie(onPlayerDied);
     player->setPosition(const_cast<sf::Vector2f &>(PLAYER_START_POS));

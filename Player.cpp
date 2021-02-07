@@ -9,7 +9,7 @@
 const int MOVE_SPEED = 6;
 const int ATTACK_COOLDOWN = 500; // milliseconds
 
-Player::Player(sf::RenderWindow *window) : Character(window, "../DigDugCharacter.png") {
+Player::Player(sf::RenderWindow *window, Dimensions screen) : Character(window, "../DigDugCharacter.png") {
     setCanAnimate(true);
     setSpriteSheetFrameDimensions(64, 64, 3, 12);
 
@@ -17,6 +17,7 @@ Player::Player(sf::RenderWindow *window) : Character(window, "../DigDugCharacter
     sf::IntRect rect(4*64, 0, 64, 64);
     _attackSprite.setTexture(_attackTexture);
     _attackSprite.setTextureRect(rect);
+    _screenDim = screen;
 };
 
 void Player::update(sf::Event &event, TileMap &map) {
@@ -33,32 +34,32 @@ void Player::move(TileMap &map) {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)) {
         if (direction != Direction::Left) {
             interpolate(pos);
-            if (_lerping) return;
-            direction = Direction::Left;
+            if (!_lerping)
+                direction = Direction::Left;
         } else {
             pos.x -= MOVE_SPEED;
         }
     } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) {
         if (direction != Direction::Right) {
             interpolate(pos);
-            if (_lerping) return;
-            direction = Direction::Right;
+            if (!_lerping)
+                direction = Direction::Right;
         } else {
             pos.x += MOVE_SPEED;
         }
     } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up)) {
         if (direction != Direction::Up) {
             interpolate(pos);
-            if (_lerping) return;
-            direction = Direction::Up;
+            if (!_lerping)
+                direction = Direction::Up;
         } else {
             pos.y -= MOVE_SPEED;
         }
     } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down)) {
         if (direction != Direction::Down) {
             interpolate(pos);
-            if (_lerping) return;
-            direction = Direction::Down;
+            if (!_lerping)
+                direction = Direction::Down;
         } else {
             pos.y += MOVE_SPEED;
         }
@@ -68,8 +69,6 @@ void Player::move(TileMap &map) {
     }
     rotateSpriteBasedOnInput(_sprite);
 
-    int windowX = _window->getSize().x;
-    int windowY = _window->getSize().y;
     int spriteRight;
     int spriteBottom;
     if (_hasAnimation) {
@@ -80,7 +79,7 @@ void Player::move(TileMap &map) {
         spriteBottom = pos.y + _texture.getSize().y * _sprite.getScale().y;
     }
 
-    if (_canMove && pos.x >= 0 && spriteRight <= windowX && pos.y >= 0 && spriteBottom <= windowY)
+    if (_canMove && pos.x >= 0 && spriteRight <= _screenDim.width && pos.y >= 0 && spriteBottom <= _screenDim.height)
         _sprite.setPosition(pos);
 
     Tile* tile = checkForTileCollision(map, 8);
@@ -214,6 +213,5 @@ void Player::interpolate(sf::Vector2<float> &pos) {
             _lerping = false;
             break;
     }
-    _sprite.setPosition(pos);
 }
 
