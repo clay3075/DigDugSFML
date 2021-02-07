@@ -38,12 +38,10 @@ void Enemy::move(TileMap &map) {
             break;
     }
 
-    int windowX = _window->getSize().x;
-    int windowY = _window->getSize().y;
     int spriteRight = pos.x + _texture.getSize().x * _sprite.getScale().x;
     int spriteBottom = pos.y + _texture.getSize().y * _sprite.getScale().y;
 
-    if (pos.x >= 0 && spriteRight <= windowX && pos.y >= 0 && spriteBottom <= windowY) {
+    if (pos.x >= 0 && spriteRight <= _screenDim.width && pos.y >= 0 && spriteBottom <= _screenDim.height) {
         setPosition(pos);
         if (checkForTileCollision(map, 1)) {
             stopAnimation();

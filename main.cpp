@@ -15,7 +15,7 @@ const sf::Vector2f PLAYER_START_POS(2*64, 5*64);
 const sf::Vector2f ENEMY1_START_POS(11*64, 2*64);
 const sf::Vector2f ENEMY2_START_POS(12*64, 7*64);
 
-Enemy* createEnemy(sf::RenderWindow*, Character*, sf::Vector2f);
+Enemy* createEnemy(sf::RenderWindow*, Character*, sf::Vector2f, Dimensions);
 void onPlayerDied(Character*);
 void onEnemyDied(Character*);
 void cleanUpCharacters(std::vector<Character*> &characters);
@@ -75,8 +75,8 @@ int main()
     return 0;
 }
 
-Enemy* createEnemy(sf::RenderWindow* window, Character* player, sf::Vector2f const startPos) {
-    auto enemy = new Dragon(window);
+Enemy* createEnemy(sf::RenderWindow* window, Character* player, sf::Vector2f const startPos, Dimensions screenDim) {
+    auto enemy = new Dragon(window, screenDim);
 
     enemy->setTarget(player);
     enemy->setOnDie(onEnemyDied);
@@ -115,8 +115,8 @@ void reset(sf::RenderWindow* window, std::vector<Character*>& characters, Dimens
     player->setOnDie(onPlayerDied);
     player->setPosition(const_cast<sf::Vector2f &>(PLAYER_START_POS));
 
-    Enemy* enemy1 = createEnemy(window, player, ENEMY1_START_POS);
-    Enemy* enemy2 = createEnemy(window, player, ENEMY2_START_POS);
+    Enemy* enemy1 = createEnemy(window, player, ENEMY1_START_POS, screenDim);
+    Enemy* enemy2 = createEnemy(window, player, ENEMY2_START_POS, screenDim);
     numberOfEnemies = 2;
 
     std::vector<Character*> tmpCharacters = {player, enemy1, enemy2};

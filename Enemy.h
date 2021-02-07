@@ -13,7 +13,9 @@
 
 class Enemy : public Character {
 public:
-    Enemy(sf::RenderWindow* window, std::string texturePath) : Character(window, std::move(texturePath)) {};
+    Enemy(sf::RenderWindow* window, std::string texturePath, Dimensions screen) : Character(window, std::move(texturePath)) {
+        _screenDim = screen;
+    };
 
     void update(sf::Event&, TileMap&) override;
     void setTarget(Character* target) { _target = target; }
@@ -27,6 +29,7 @@ private:
     std::default_random_engine generator;
     int randomDirection();
     bool _canMove = true;
+    Dimensions _screenDim;
 };
 
 

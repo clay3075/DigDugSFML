@@ -9,7 +9,7 @@
 
 class Dragon: public Enemy {
 public:
-    explicit Dragon(sf::RenderWindow* window) : Enemy(window, "../DigDugMonster.png") {
+    explicit Dragon(sf::RenderWindow* window, Dimensions screen) : Enemy(window, "../DigDugMonster.png", screen) {
         this->setCanAnimate(true);
         this->setSpriteSheetFrameDimensions(64, 64, 3, 12);
     }
